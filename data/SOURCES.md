@@ -1,8 +1,8 @@
 # Corpus sources / Источники корпуса
 
-The current `corpus.jsonl` contains short, original learning-fixture passages written for this repository. They are paraphrases, not quotations, and are not evaluation evidence for a portfolio claim.
+The current `corpus.jsonl` contains short, original learning-fixture passages written for this repository. They are paraphrases, not quotations, and are not a benchmark for evaluating retrieval quality.
 
-В текущем `corpus.jsonl` находятся короткие оригинальные учебные фрагменты, созданные для этого репозитория. Это пересказ, а не цитаты; по ним нельзя делать выводы о качестве проекта для портфолио.
+В текущем `corpus.jsonl` находятся короткие оригинальные учебные фрагменты, созданные для этого репозитория. Это пересказ, а не цитаты и не бенчмарк для оценки качества поиска.
 
 The next corpus version should use public Python documentation pages. Before ingesting them, record page URLs, the documentation release, access date, and applicable license here.
 
