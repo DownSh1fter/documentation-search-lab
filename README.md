@@ -19,12 +19,18 @@ python -m venv .venv
 # macOS / Linux
 source .venv/bin/activate
 # Windows PowerShell
-.venv\Scripts\Activate.ps1
+.venv\\Scripts\\Activate.ps1
 python -m pip install -e .
 python scripts/build_corpus.py
 python -m doc_search.evaluate
 python -m doc_search.cli "How do I read a text file?"
 ```
+
+### Web interface
+
+After installing the project, double-click `start-search.bat` on Windows. It opens the search page in your browser. Enter a question in English, choose how many results to show, and select **Find**. Each result shows a documentation passage, its TF-IDF score, and a link to the source page. Keep the console window open while using the app; press `Ctrl+C` there to stop the server.
+
+You can also start the interface from an activated environment with `python -m doc_search.web`, then open `http://127.0.0.1:8000`.
 
 ## Planned milestones
 
@@ -33,7 +39,7 @@ python -m doc_search.cli "How do I read a text file?"
 3. Add semantic retrieval and compare it on the same questions.
 4. Inspect failures and try hybrid retrieval or reranking if useful.
 5. Add grounded answer generation with citations and abstention.
-6. Serve the system with FastAPI and Docker; document reproducible setup and results.
+6. Package the API and web interface for reproducible startup with Docker.
 
 ## Evaluation principles
 
