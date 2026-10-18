@@ -1,0 +1,5 @@
+{"id":"q001","question":"How do I define a function with a default argument?","relevant_passage_ids":["functions-defaults"],"split":"development"}
+{"id":"q002","question":"What is the difference between a list and a tuple?","relevant_passage_ids":["lists","tuples"],"split":"development"}
+{"id":"q003","question":"How can I read a text file safely and ensure it is closed?","relevant_passage_ids":["files-with"],"split":"development"}
+{"id":"q004","question":"How do exceptions work with try and except?","relevant_passage_ids":["exceptions"],"split":"development"}
+{"id":"q005","question":"How do I make an iterator from a class?","relevant_passage_ids":["iterators"],"split":"development"}
