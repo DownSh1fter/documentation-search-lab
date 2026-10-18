@@ -2,7 +2,7 @@
 
 [Русская версия ниже](README.ru.md).
 
-An end-to-end text retrieval project. The goal is to compare lexical and semantic search over technical documentation, measure retrieval quality, inspect failures, and serve grounded answers with source links.
+An end-to-end NLP retrieval project with TF-IDF and dense semantic search, a fine-tunable sentence-embedding retriever, and local retrieval-augmented answer generation (RAG) with source links.
 
 ## Why this project
 
@@ -10,7 +10,7 @@ This personal learning project is a way to practice practical ML engineering: co
 
 ## Current status
 
-The current version indexes 198 passages extracted from seven pages of the Python 3.15.0 Tutorial. Its 32 English development questions have manually labeled relevant passages and Russian translations.
+The project indexes 206 passages from seven pages of the Python 3.15.0 Tutorial and the built-in `open()` reference. Its 32 English questions have manually labeled relevant passages and Russian translations. Implemented: TF-IDF and dense retrieval, contrastive fine-tuning, and a local RAG pipeline with evidence retrieval, cited generation, and abstention. The current eight-question retrieval holdout shows a small dense-search improvement after fine-tuning, but TF-IDF remains stronger on Recall@1 and MRR@5. The six-case RAG smoke test does not meet its answer-quality or citation gates, so RAG is implemented but not yet validated as a reliable question-answering system. See `reports/EVALUATION_RESULTS.md`.
 
 ## Quick start
 
@@ -26,6 +26,23 @@ python -m doc_search.evaluate
 python -m doc_search.cli "How do I read a text file?"
 ```
 
+### Semantic search, fine-tuning, and RAG
+
+```bash
+python -m pip install -e '.[semantic,rag,train]'
+python -m doc_search.evaluate --mode semantic --model sentence-transformers/all-MiniLM-L6-v2 --questions data/questions-holdout.jsonl --split-name holdout-v1 --output reports/semantic-holdout.json
+python -m doc_search.finetune --questions data/questions-train.jsonl --output models/retriever --epochs 2
+python -m doc_search.evaluate --mode tfidf --questions data/questions-holdout.jsonl --split-name holdout-v1 --output reports/tfidf-holdout.json
+python -m doc_search.evaluate --mode semantic --model models/retriever --questions data/questions-holdout.jsonl --split-name holdout-v1 --output reports/fine-tuned-holdout.json
+python -m doc_search.cli "How do I read a text file?" --mode semantic --model models/retriever
+python -m doc_search.cli "How do I read a text file?" --mode rag --model models/retriever
+python -m doc_search.evaluate_rag --model models/retriever --answer-model Qwen/Qwen2.5-1.5B-Instruct
+```
+
+Semantic search and fine-tuning run locally with Sentence Transformers; the first run downloads the selected base model. Fine-tuning uses the train split with a multiple-negatives ranking objective. RAG retrieves passages and uses a local instruction-tuned Qwen model to generate a concise, cited answer from the evidence only; the pipeline requires valid source IDs and abstains when evidence is weak or the model refuses. RAG dependencies and model weights are downloaded on first use. Do not report a quality gain without comparing evaluation reports on a held-out question split.
+
+The RAG review set currently has six manually curated cases (four answerable and two unanswerable). `reports/RAG_REVIEW.md` defines manual answer/support/citation judgments and provisional smoke-test success gates. Expand and hold out cases before making broad performance claims.
+
 ### Web interface
 
 After installing the project, double-click `start-search.bat` on Windows. It opens the search page in your browser. Enter a question in English, choose how many results to show, and select **Find**. Each result shows a documentation passage, its TF-IDF score, and a link to the source page. Keep the console window open while using the app; press `Ctrl+C` there to stop the server.
@@ -36,9 +53,9 @@ You can also start the interface from an activated environment with `python -m d
 
 1. Define the task, corpus sources, and evaluation format.
 2. Measure a lexical retrieval baseline with Recall@k and MRR.
-3. Add semantic retrieval and compare it on the same questions.
-4. Inspect failures and try hybrid retrieval or reranking if useful.
-5. Add grounded answer generation with citations and abstention.
+3. Compare implemented dense semantic retrieval against the lexical baseline.
+4. Fine-tune on the train split; compare against TF-IDF and the base embedding model on the held-out questions.
+5. Generate grounded local RAG answers with source links and abstention.
 6. Package the API and web interface for reproducible startup with Docker.
 
 ## Evaluation principles
@@ -54,12 +71,18 @@ The baseline uses English TF-IDF with unigrams and bigrams, ranked by cosine sim
 
 | Metric | Score |
 | --- | ---: |
-| Recall@1 | 0.625 |
-| Recall@3 | 0.750 |
+| Recall@1 | 0.594 |
+| Recall@3 | 0.719 |
 | Recall@5 | 0.875 |
-| MRR@5 | 0.704 |
+| MRR@5 | 0.680 |
 
 Four of 32 questions had no relevant passage in the top five. These are development results for a small, manually labeled question set, not a final holdout evaluation. See `reports/` for the saved metrics and error notes.
+
+## Resume-ready summary (implementation scope)
+
+- Built a documentation retrieval pipeline with lexical TF-IDF and dense semantic search using Sentence Transformers; evaluated ranking with Recall@k and MRR.
+- Implemented contrastive fine-tuning of sentence embeddings from labeled question-passage pairs, with model export and held-out evaluation (improves over the base dense encoder, but not TF-IDF, on the current eight-question holdout).
+- Implemented a local generative RAG pipeline with dense retrieval, evidence-constrained Qwen answer generation, citation-ID validation, and abstention; the six-case smoke test fails answer-quality and citation-support gates, so reliability is not yet established.
 
 ## Repository map
 

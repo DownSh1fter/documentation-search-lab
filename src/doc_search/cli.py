@@ -4,7 +4,8 @@ import argparse
 from pathlib import Path
 
 from doc_search.data import load_passages
-from doc_search.retrieval import TfidfRetriever
+from doc_search.retrieval import SemanticRetriever, TfidfRetriever
+from doc_search.rag import LocalRAG
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -14,10 +15,22 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Search the documentation fixture corpus")
     parser.add_argument("query", help="Question or phrase to search for")
     parser.add_argument("--top-k", type=int, default=3, help="Maximum number of results")
+    parser.add_argument("--mode", choices=("tfidf", "semantic", "rag"), default="tfidf")
+    parser.add_argument("--model", default="sentence-transformers/all-MiniLM-L6-v2")
     args = parser.parse_args()
 
     passages = load_passages(PROJECT_ROOT / "data" / "corpus.jsonl")
-    retriever = TfidfRetriever(passages)
+    retriever = (
+        TfidfRetriever(passages)
+        if args.mode == "tfidf"
+        else SemanticRetriever(passages, args.model)
+    )
+    if args.mode == "rag":
+        answer = LocalRAG(retriever).answer(args.query, top_k=args.top_k)
+        print(answer.answer)
+        for source in answer.sources:
+            print(f"Source: {source.passage.title} — {source.passage.source_url}")
+        return
     results = retriever.search(args.query, top_k=args.top_k)
     if not results:
         print("No matching passages found.")

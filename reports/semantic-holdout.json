@@ -1,0 +1,166 @@
+{
+  "retriever": "sentence-transformers/all-MiniLM-L6-v2",
+  "corpus_version": "python-docs-3.15.0",
+  "question_split": "holdout-v1",
+  "question_count": 8,
+  "metrics": {
+    "recall@1": 0.625,
+    "recall@3": 1.0,
+    "recall@5": 1.0,
+    "mrr@5": 0.7916666666666667
+  },
+  "per_question": [
+    {
+      "id": "q003",
+      "question": "How does an if statement choose which code block to execute?",
+      "question_ru": "Как оператор if выбирает блок кода для выполнения?",
+      "relevant_passage_ids": [
+        "controlflow-if-statements"
+      ],
+      "retrieved_passage_ids": [
+        "datastructures-more-on-conditions-part-02",
+        "controlflow-if-statements",
+        "controlflow-else-clauses-on-loops-part-02",
+        "introduction-first-steps-towards-programming-part-02",
+        "datastructures-more-on-conditions-part-01"
+      ],
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0
+    },
+    {
+      "id": "q007",
+      "question": "How does pattern matching with match and case work?",
+      "question_ru": "Как работает сопоставление с образцом через match и case?",
+      "relevant_passage_ids": [
+        "controlflow-match-statements-part-01"
+      ],
+      "retrieved_passage_ids": [
+        "controlflow-match-statements-part-05",
+        "controlflow-match-statements-part-01",
+        "controlflow-match-statements-part-07",
+        "controlflow-match-statements-part-04",
+        "controlflow-match-statements-part-06"
+      ],
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0
+    },
+    {
+      "id": "q011",
+      "question": "Why is a list inefficient as a first-in first-out queue, and what can I use instead?",
+      "question_ru": "Почему список неэффективен как очередь FIFO и что можно использовать вместо него?",
+      "relevant_passage_ids": [
+        "datastructures-using-lists-as-queues"
+      ],
+      "retrieved_passage_ids": [
+        "datastructures-using-lists-as-queues",
+        "datastructures-more-on-lists-part-02",
+        "datastructures-using-lists-as-stacks",
+        "datastructures-more-on-lists-part-01",
+        "controlflow-the-range-function-part-02"
+      ],
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0
+    },
+    {
+      "id": "q015",
+      "question": "How do I remove duplicate values using a set?",
+      "question_ru": "Как убрать повторяющиеся значения с помощью множества?",
+      "relevant_passage_ids": [
+        "datastructures-sets-part-01"
+      ],
+      "retrieved_passage_ids": [
+        "datastructures-sets-part-01",
+        "datastructures-the-del-statement",
+        "datastructures-looping-techniques-part-02",
+        "datastructures-list-comprehensions-part-03",
+        "datastructures-sets-part-02"
+      ],
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0
+    },
+    {
+      "id": "q019",
+      "question": "What should a package define to control names imported with from package import *?",
+      "question_ru": "Что должен определить пакет, чтобы управлять именами при импорте from package import *?",
+      "relevant_passage_ids": [
+        "modules-importing-from-a-package-part-01"
+      ],
+      "retrieved_passage_ids": [
+        "modules-importing-from-a-package-part-03",
+        "modules-more-on-modules-part-02",
+        "modules-importing-from-a-package-part-01",
+        "modules-intra-package-references",
+        "modules-packages-part-02"
+      ],
+      "mrr": 0.3333333333333333,
+      "recall@1": 0.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0
+    },
+    {
+      "id": "q023",
+      "question": "How can I serialize a Python object to JSON and load it back?",
+      "question_ru": "Как сериализовать объект Python в JSON и загрузить его обратно?",
+      "relevant_passage_ids": [
+        "inputoutput-saving-structured-data-with-json-part-02"
+      ],
+      "retrieved_passage_ids": [
+        "inputoutput-saving-structured-data-with-json-part-02",
+        "inputoutput-saving-structured-data-with-json-part-01",
+        "inputoutput-saving-structured-data-with-json-part-03",
+        "classes-odds-and-ends",
+        "datastructures-dictionaries-part-01"
+      ],
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0
+    },
+    {
+      "id": "q027",
+      "question": "How does finally run cleanup code when an exception occurs?",
+      "question_ru": "Как finally выполняет очистку, если произошло исключение?",
+      "relevant_passage_ids": [
+        "errors-defining-clean-up-actions-part-01"
+      ],
+      "retrieved_passage_ids": [
+        "errors-defining-clean-up-actions-part-01",
+        "errors-defining-clean-up-actions-part-03",
+        "errors-handling-exceptions-part-06",
+        "errors-defining-clean-up-actions-part-02",
+        "errors-handling-exceptions-part-01"
+      ],
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0
+    },
+    {
+      "id": "q031",
+      "question": "Which methods does a class need to implement the iterator protocol?",
+      "question_ru": "Какие методы должен реализовать класс для поддержки протокола итератора?",
+      "relevant_passage_ids": [
+        "classes-iterators-part-02"
+      ],
+      "retrieved_passage_ids": [
+        "classes-iterators-part-02",
+        "classes-iterators-part-01",
+        "classes-method-objects-part-02",
+        "classes-generators",
+        "controlflow-the-range-function-part-02"
+      ],
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0
+    }
+  ]
+}

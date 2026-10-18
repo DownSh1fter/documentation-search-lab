@@ -10,6 +10,7 @@ from urllib.request import Request, urlopen
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DOCS_VERSION = "3.15.0"
 BASE_URL = f"https://docs.python.org/release/{DOCS_VERSION}/tutorial/"
+LIBRARY_URL = f"https://docs.python.org/release/{DOCS_VERSION}/builtins/"
 PAGES = {
     "introduction": "introduction.html",
     "controlflow": "controlflow.html",
@@ -91,6 +92,49 @@ class _TutorialParser(HTMLParser):
             self.section_stack[-1].text.append(data)
 
 
+class _FunctionParser(HTMLParser):
+    """Extract one documented Python built-in function from the built-ins reference."""
+
+    _BLOCK_TAGS = {"p", "div", "pre", "li", "ul", "ol", "table", "tr", "br", "dt", "dd"}
+
+    def __init__(self, function_id: str) -> None:
+        super().__init__(convert_charrefs=True)
+        self.function_id = function_id
+        self.depth = 0
+        self.found = False
+        self.candidate_found = False
+        self.candidate_text: list[str] = []
+        self.text: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = dict(attrs)
+        if not self.depth and tag == "dl" and "function" in (attributes.get("class") or "").split():
+            self.depth = 1
+            self.candidate_found = False
+            self.candidate_text = []
+        elif self.depth:
+            self.depth += 1
+        if self.depth and tag in self._BLOCK_TAGS:
+            self.candidate_text.append(" ")
+        if self.depth and attributes.get("id") == self.function_id:
+            self.candidate_found = True
+
+    def handle_endtag(self, tag: str) -> None:
+        if self.depth:
+            if tag in self._BLOCK_TAGS:
+                self.candidate_text.append(" ")
+            self.depth -= 1
+            if not self.depth:
+                if self.candidate_found:
+                    self.text = self.candidate_text
+                    self.found = True
+                self.candidate_text = []
+
+    def handle_data(self, data: str) -> None:
+        if self.depth:
+            self.candidate_text.append(data)
+
+
 def _download(url: str) -> str:
     request = Request(url, headers={"User-Agent": "doc-search-lab/0.1 learning project"})
     with urlopen(request, timeout=30) as response:
@@ -99,11 +143,27 @@ def _download(url: str) -> str:
 
 def build_passages() -> list[dict[str, str]]:
     passages: list[dict[str, str]] = []
-    for page_id, filename in PAGES.items():
-        page_url = BASE_URL + filename
-        parser = _TutorialParser()
-        parser.feed(_download(page_url))
-        for section in parser.sections:
+    pages = [
+        (page_id, BASE_URL + filename, None) for page_id, filename in PAGES.items()
+    ]
+    pages.append(("builtins", LIBRARY_URL + "functions.html", "open"))
+    for page_id, page_url, only_anchor in pages:
+        if only_anchor == "open":
+            element_parser = _FunctionParser("open")
+            element_parser.feed(_download(page_url))
+            text = re.sub(r"\s+", " ", " ".join(element_parser.text)).strip()
+            if not text:
+                raise RuntimeError("Could not extract the built-in open() reference section")
+            sections = [_Section("open")]
+            sections[0].title = "open()"
+            sections[0].text = [text]
+        else:
+            parser = _TutorialParser()
+            parser.feed(_download(page_url))
+            sections = parser.sections
+        for section in sections:
+            if only_anchor and section.anchor != only_anchor:
+                continue
             text = re.sub(r"\s+", " ", " ".join(section.text)).strip()
             title = re.sub(r"[\s\u00b6]+$", "", section.title).strip()
             if len(text) < 80:
