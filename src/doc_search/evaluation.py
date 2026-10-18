@@ -24,9 +24,10 @@ def reciprocal_rank(relevant_ids: Iterable[str], retrieved_ids: list[str]) -> fl
 
 
 def evaluate_retriever(
-    retriever: TfidfRetriever,
+    retriever: Any,
     questions: list[dict[str, Any]],
     ks: tuple[int, ...] = (1, 3, 5),
+    question_split: str = "development-v1",
 ) -> dict[str, Any]:
     if not questions:
         raise ValueError("At least one evaluation question is required")
@@ -68,9 +69,9 @@ def evaluate_retriever(
     count = len(questions)
     metrics = {name: value / count for name, value in totals.items()}
     return {
-        "retriever": "tfidf-cosine",
+        "retriever": getattr(retriever, "model_name", "tfidf-cosine"),
         "corpus_version": "python-docs-3.15.0",
-        "question_split": "development-v1",
+        "question_split": question_split,
         "question_count": count,
         "metrics": metrics,
         "per_question": per_question,

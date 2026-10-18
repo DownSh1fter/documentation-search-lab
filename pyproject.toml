@@ -19,7 +19,9 @@ dependencies = [
 doc-search-web = "doc_search.web:main"
 
 [project.optional-dependencies]
-semantic = ["sentence-transformers>=3.0"]
+semantic = ["sentence-transformers>=3.0,<6", "transformers>=4.40,<5"]
+rag = ["transformers>=4.40,<5", "torch>=2.2"]
+train = ["sentence-transformers>=3.0,<6", "transformers>=4.40,<5", "torch>=2.2", "datasets>=3.0,<5", "accelerate>=1.1"]
 dev = ["pytest>=8.0", "ruff>=0.4"]
 
 [tool.setuptools.packages.find]

@@ -46,3 +46,33 @@ class TfidfRetriever:
             for index in ranked
             if scores[index] > 0
         ]
+
+
+class SemanticRetriever:
+    """Dense cosine retrieval using a Sentence Transformers encoder."""
+
+    def __init__(self, passages: list[Passage], model_name: str) -> None:
+        if not passages:
+            raise ValueError("At least one passage is required")
+        try:
+            from sentence_transformers import SentenceTransformer
+        except ImportError as exc:
+            raise RuntimeError(
+                "Semantic search requires optional dependencies: pip install -e '.[semantic]'"
+            ) from exc
+        self.passages = passages
+        self.model_name = model_name
+        self.model = SentenceTransformer(model_name)
+        self.embeddings = self.model.encode(
+            [f"{p.title}. {p.text}" for p in passages], normalize_embeddings=True
+        )
+
+    def search(self, query: str, top_k: int = 3) -> list[SearchResult]:
+        if not query.strip():
+            raise ValueError("Query must not be empty")
+        if top_k < 1:
+            raise ValueError("top_k must be at least 1")
+        vector = self.model.encode([query], normalize_embeddings=True)[0]
+        scores = self.embeddings @ vector
+        ranked = scores.argsort()[::-1][:top_k]
+        return [SearchResult(self.passages[i], float(scores[i])) for i in ranked]
