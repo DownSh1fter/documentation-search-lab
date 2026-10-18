@@ -15,6 +15,9 @@ dependencies = [
   "scikit-learn>=1.4",
 ]
 
+[project.scripts]
+doc-search-web = "doc_search.web:main"
+
 [project.optional-dependencies]
 semantic = ["sentence-transformers>=3.0"]
 dev = ["pytest>=8.0", "ruff>=0.4"]
