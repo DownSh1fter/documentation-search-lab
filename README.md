@@ -10,7 +10,7 @@ This personal learning project is a way to practice practical ML engineering: co
 
 ## Current status
 
-The first runnable milestone is a TF-IDF lexical retriever over a tiny hand-written fixture corpus. The fixture makes the pipeline easy to inspect; it is not a benchmark. We will replace it with real documentation before evaluating search quality.
+The current version indexes 198 passages extracted from seven pages of the Python 3.15.0 Tutorial. Its 32 English development questions have manually labeled relevant passages and Russian translations.
 
 ## Quick start
 
@@ -21,6 +21,8 @@ source .venv/bin/activate
 # Windows PowerShell
 .venv\Scripts\Activate.ps1
 python -m pip install -e .
+python scripts/build_corpus.py
+python -m doc_search.evaluate
 python -m doc_search.cli "How do I read a text file?"
 ```
 
@@ -40,17 +42,31 @@ python -m doc_search.cli "How do I read a text file?"
 - Report retrieval metrics and failure examples; avoid a single accuracy number without context.
 - Record the corpus version, model name, configuration, and random seed with results.
 
+## TF-IDF baseline
+
+The baseline uses English TF-IDF with unigrams and bigrams, ranked by cosine similarity. On the current development set:
+
+| Metric | Score |
+| --- | ---: |
+| Recall@1 | 0.625 |
+| Recall@3 | 0.750 |
+| Recall@5 | 0.875 |
+| MRR@5 | 0.704 |
+
+Four of 32 questions had no relevant passage in the top five. These are development results for a small, manually labeled question set, not a final holdout evaluation. See `reports/` for the saved metrics and error notes.
+
 ## Repository map
 
 ```text
 data/                 source documents and evaluation questions
+scripts/              reproducible corpus builder
 src/doc_search/       ingestion, retrieval, evaluation, and API code
 reports/              saved metrics and error analysis
 ```
 
 ## Data and license
 
-The current `data/corpus.jsonl` contains original learning-fixture passages that paraphrase concepts from Python documentation. It is not a benchmark. Corpus source URLs and license details are tracked in `data/SOURCES.md`.
+The corpus is downloaded and rebuilt from official Python documentation by `scripts/build_corpus.py`. Sources, version, access date, and license details are tracked in `data/SOURCES.md`.
 
 Code is licensed under MIT. Do not commit private or personal data.
 
