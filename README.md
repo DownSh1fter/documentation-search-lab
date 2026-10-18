@@ -8,6 +8,35 @@ An end-to-end NLP retrieval project with TF-IDF and dense semantic search, a fin
 
 This personal learning project is a way to practice practical ML engineering: corpus preparation, a reproducible evaluation set, retrieval metrics, error analysis, an API, and a small demo. We will record measured results with the dataset version and evaluation limits.
 
+## What this project does
+
+Documentation Search Lab helps a user find information in a fixed collection of technical documents. For example, a question such as "How do I open a text file with a specific encoding?" is used to retrieve relevant Python documentation passages. In RAG mode, a local language model then attempts to write an answer from those passages and cite its sources.
+
+| Mode | Purpose | Current access |
+| --- | --- | --- |
+| TF-IDF | Find passages by lexical overlap between the question and documents | CLI, browser interface, and search API |
+| Semantic search | Find passages using sentence embeddings and cosine similarity | CLI |
+| RAG | Retrieve evidence and generate an answer with source references using local Qwen | CLI |
+
+Fine-tuning adapts the sentence-embedding retriever on labeled question–passage pairs. It does not fine-tune the Qwen generator. Citation-ID validation checks that cited IDs belong to the supplied evidence; it does not prove that the cited passage supports every claim.
+
+## Where it can be used
+
+Today, the project can be used locally to search the included Python documentation, compare retrieval approaches, and practice data preparation, model adaptation, evaluation, and error analysis. It also provides a portfolio demonstration of an NLP retrieval and RAG workflow.
+
+The following are possible adaptations, rather than ready-made integrations:
+
+| Scenario | Example | Work needed |
+| --- | --- | --- |
+| Team documentation | Find service descriptions and onboarding instructions | Prepare the corpus, refresh documents, and enforce access permissions where required |
+| Product support | Retrieve answers from manuals and FAQs | Add product documents and evaluate representative customer questions |
+| QA knowledge search | Find API requirements and expected product behavior | Ingest specifications and check answers against versioned sources |
+| Personal technical knowledge base | Search notes and technical guides | Add document loaders and an indexing/update workflow |
+
+The current corpus is a selected subset of Python documentation. Arbitrary PDFs, websites, and corporate knowledge bases are not automatically supported. The browser interface and search API currently expose TF-IDF only; semantic search and RAG are available through the CLI.
+
+RAG remains experimental: the published smoke test does not meet answer-quality and citation-support gates. See [evaluation results](reports/EVALUATION_RESULTS.md) before relying on generated answers. Production use would require broader evaluation, better answer grounding, and operational work such as deployment, monitoring, and access control.
+
 ## Current status
 
 The project indexes 206 passages from seven pages of the Python 3.15.0 Tutorial and the built-in `open()` reference. Its 32 English questions have manually labeled relevant passages and Russian translations. Implemented: TF-IDF and dense retrieval, contrastive fine-tuning, and a local RAG pipeline with evidence retrieval, cited generation, and abstention. The current eight-question retrieval holdout shows a small dense-search improvement after fine-tuning, but TF-IDF remains stronger on Recall@1 and MRR@5. The six-case RAG smoke test does not meet its answer-quality or citation gates, so RAG is implemented but not yet validated as a reliable question-answering system. See `reports/EVALUATION_RESULTS.md`.
