@@ -6,11 +6,11 @@ An end-to-end text retrieval project. The goal is to compare lexical and semanti
 
 ## Why this project
 
-This portfolio project demonstrates practical ML engineering: corpus preparation, a reproducible evaluation set, retrieval metrics, error analysis, an API, and a small demo. We will publish measured results with the dataset version and evaluation limits.
+This personal learning project is a way to practice practical ML engineering: corpus preparation, a reproducible evaluation set, retrieval metrics, error analysis, an API, and a small demo. We will record measured results with the dataset version and evaluation limits.
 
 ## Current status
 
-The first runnable milestone is a TF-IDF lexical retriever over a tiny hand-written fixture corpus. The fixture makes the pipeline easy to inspect; it is not a benchmark and must be replaced before we make portfolio performance claims.
+The first runnable milestone is a TF-IDF lexical retriever over a tiny hand-written fixture corpus. The fixture makes the pipeline easy to inspect; it is not a benchmark. We will replace it with real documentation before evaluating search quality.
 
 ## Quick start
 
