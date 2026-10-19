@@ -1,6 +1,6 @@
 # Documentation Search Lab
 
-[Русская версия ниже](README.ru.md).
+[Русская версия ниже](README.ru.md)
 
 An end-to-end NLP retrieval project with TF-IDF and dense semantic search, a fine-tunable sentence-embedding retriever, and local retrieval-augmented answer generation (RAG) with source links.
 
